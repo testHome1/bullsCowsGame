@@ -12,7 +12,7 @@
             User user = (User) session.getAttribute("user");
             if (user != null) {
                 out.print(user.toString());
-                response.sendRedirect("game.jsp");
+                response.sendRedirect("game.jsp"); 
             } else {
                 Boolean isFirstAuth = (Boolean) session.getAttribute("auth");
                 if (isFirstAuth != null) {
