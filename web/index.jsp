@@ -7,7 +7,7 @@
         <title>Главная страница</title>
     </head>
     <body>
-        <h1>Игра "Быки - коровы"</h1>
+        <h1 style="margin-bottom:0.5em;">Быки и коровы</h1>
         <%
             User user = (User) session.getAttribute("user");
             if (user != null) {
