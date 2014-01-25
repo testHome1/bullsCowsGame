@@ -4,45 +4,16 @@
     Author     : Mvideo
 --%>
 
+<%@page import="com.controller.NumberConroller"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Игра</title>
     </head>
-
-    <script type="text/javascript">
-        function createXMLHttpRequest(){
-            // See http://en.wikipedia.org/wiki/XMLHttpRequest
-            // Provide the XMLHttpRequest class for IE 5.x-6.x:
-            if( typeof XMLHttpRequest == "undefined" ) XMLHttpRequest = function() {
-                try { return new ActiveXObject("Msxml2.XMLHTTP.6.0") } catch(e) {}
-                try { return new ActiveXObject("Msxml2.XMLHTTP.3.0") } catch(e) {}
-                try { return new ActiveXObject("Msxml2.XMLHTTP") } catch(e) {}
-                try { return new ActiveXObject("Microsoft.XMLHTTP") } catch(e) {}
-                throw new Error( "This browser does not support XMLHttpRequest." )
-            };
-            return new XMLHttpRequest();
-        }
-
-        var AJAX = createXMLHttpRequest();
-
-        function handler() {
-            if(AJAX.readyState == 4 && AJAX.status == 200) {
-                var text = AJAX.responseText;
-                alert('Success. Result: ' + text);
-            }else if (AJAX.readyState == 4 && AJAX.status != 200) {
-                alert('Something went wrong...');
-            }
-        }
-
-        function show(){
-            AJAX.onreadystatechange = handler;
-            AJAX.open("GET", "getList.jsp", true);
-            AJAX.send();
-        };
-    </script>
 
     <body>
 
@@ -58,9 +29,73 @@
                 <b>Новое число уже задумано компьютером. Играем!</b>
             </p>
         </div>
-        <!-- А здесь чувак попробуем AJAX -->
-        <!-- СДЕЛАТЬ ТАК ЧТОБЫ ДОБАВЛЯТЬ МОЖНО БЫЛО ДАННЫЕ ОТПРАВЛЯТЬ ИХ В ДРУГОЙ ФАЙЛ И БРАТЬ ОБРАТНО ВЕСЬ СПИСОК -->
-        <a href="#" onclick="javascript:show();"> Click here to get JSON data from the server side</a>
+        <%
+            Boolean isBegin = (Boolean) session.getAttribute("isBegin");
+            String nameStep = (String) request.getParameter("SubmitStep");
+            String nameNewGame = (String) request.getParameter("SubmitNewGame");
+            if (nameStep != null) {
+                //out.print("Next step");
+                Boolean step = (Boolean) session.getAttribute("step");
+                if (step == null) {
+                    session.setAttribute("step", new Boolean(true));
+                    session.setAttribute("list", new ArrayList<String>());
+                    session.setAttribute("finalValue", NumberConroller.createNumber());
+                    List<String> list = (List<String>) session.getAttribute("list");
+                    String number = String.valueOf(request.getParameter("number"));
+                    list.add(number);
+                    session.setAttribute("victory", new Boolean(false));
+                } else {
+                    List<String> list = (List<String>) session.getAttribute("list");
+                    String number = String.valueOf(request.getParameter("number"));
+                    //Todo обработка намбер и задуманного числа
+                    list.add(number);
+                }
+
+            }
+            if (nameNewGame != null) {
+                //out.print("New Game");
+                session.setAttribute("step", null);
+                session.setAttribute("list", null);
+                session.setAttribute("finalValue", NumberConroller.createNumber());
+                session.setAttribute("victory", new Boolean(false));
+            }
+
+            out.print("<form name='gameform' method='post' action='game.jsp'>");
+            out.print("<table align='center'><tr><td><h2>Новая игра</h2></td></tr></table>");
+            List<String> list = (List<String>) session.getAttribute("list");
+            if (list != null) {
+                for (String number : list) {
+                    String finalValue = String.valueOf(session.getAttribute("finalValue"));
+                    List<Integer> bullsCows = NumberConroller.returnCompareNumbers(finalValue, number);
+                    Integer countCows = bullsCows.get(0);
+                    Integer countBulls = bullsCows.get(1);
+                    String text = "";
+                    if (countBulls != 4) {
+                        text = " Количество коров " + countCows + " количество быков " + countBulls;
+                    } else {
+                        text = " УРА ВЫ ВЫИГРАЛИ";
+                        out.print("<script>alert('ПОБЕДА');</script>");
+                        session.setAttribute("step", null);
+                        session.setAttribute("list", null);
+                        session.setAttribute("finalValue", NumberConroller.createNumber());
+                        session.setAttribute("victory", new Boolean(true));
+                        break;
+                    }
+                    out.print(number + text + " " + finalValue + "<br />");
+
+                }
+            }
+            //Todo когда выиграли не показываем первый tr
+            out.print("<table width='300px' align='left' style='border:1px solid #000000;background-color:#efefef;'>");
+            Boolean victory = (Boolean) session.getAttribute("victory");
+            if (!victory) {
+                out.print("<tr><td><input type='text' name='number' value=''></td><td><input type='submit' name='SubmitStep' value='Сделать ход'></td></tr>");
+            }
+            out.print("<tr><td colspan='2'><input type='submit' name='SubmitNewGame' value='Новая игра'></td></tr>");
+            out.print("</table>");
+            out.print("</form>");
+
+        %>
         <!-- Для выхода достаточно удалить сессию сделать nullом у user и auth -->
     </body>
 </html>
