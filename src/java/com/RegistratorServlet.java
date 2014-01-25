@@ -1,10 +1,13 @@
 package com;
 
 import com.controller.DatabaseManager;
+import com.dao.UserDao;
+import com.dao.UserDaoImpl;
 import com.model.User;
 import com.mysql.jdbc.Connection;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +30,7 @@ public class RegistratorServlet extends HttpServlet {
         DatabaseManager db = new DatabaseManager("jdbc:mysql://localhost:3306/", "bullscowsgame", "com.mysql.jdbc.Driver", "root", "050391z");
         User user = db.getUserFromDatabase(request.getParameter("userName"), request.getParameter("password"));
         db.closeConnection();
+                
         HttpSession session = request.getSession(true);
         if(user != null) {                   
             session.setAttribute("user", user);           

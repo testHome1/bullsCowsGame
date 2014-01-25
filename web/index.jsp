@@ -6,7 +6,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Главная страница</title>
     </head>
-    <body>
+    <body> 
         <h1 style="margin-bottom:0.5em;">Быки и коровы</h1>
         <%
             User user = (User) session.getAttribute("user");

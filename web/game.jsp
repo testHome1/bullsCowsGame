@@ -4,6 +4,12 @@
     Author     : Mvideo
 --%>
 
+<%@page import="com.controller.DatabaseManager"%>
+<%@page import="com.dao.UserDaoImpl"%>
+<%@page import="com.dao.UserDao"%>
+<%@page import="com.model.User"%>
+<%@page import="com.model.User"%>
+<%@page import="com.model.User"%>
 <%@page import="com.controller.NumberConroller"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
@@ -88,13 +94,21 @@
             //Todo когда выиграли не показываем первый tr
             out.print("<table width='300px' align='left' style='border:1px solid #000000;background-color:#efefef;'>");
             Boolean victory = (Boolean) session.getAttribute("victory");
-            if (!victory) {
-                out.print("<tr><td><input type='text' name='number' value=''></td><td><input type='submit' name='SubmitStep' value='Сделать ход'></td></tr>");
+            if (victory != null) {
+                if (!victory) {
+                    out.print("<tr><td><input type='text' name='number' value=''></td><td><input type='submit' name='SubmitStep' value='Сделать ход'></td></tr>");
+                }
             }
             out.print("<tr><td colspan='2'><input type='submit' name='SubmitNewGame' value='Новая игра'></td></tr>");
             out.print("</table>");
             out.print("</form>");
 
+            DatabaseManager db = new DatabaseManager("jdbc:mysql://localhost:3306/", "bullscowsgame", "com.mysql.jdbc.Driver", "root", "050391z");
+            UserDao userDao = new UserDaoImpl(db);
+//            List<User> users = userDao.getAllUsers();
+//            for(User user : users)
+//                out.print(user);
+            db.closeConnection();
         %>
         <!-- Для выхода достаточно удалить сессию сделать nullом у user и auth -->
     </body>
