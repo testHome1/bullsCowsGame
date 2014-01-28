@@ -1,10 +1,29 @@
 package com.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
+@Entity
+@Table(name = "users", catalog = "bullscowsgame")
 public class User {
+
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "id", unique = true, nullable = false)
+    private int id;
+    @Column(name = "userName")
     private String userName;
+    @Column(name = "password")
     private String password;
-    
+
+    public User() {
+    }
+
     public User(String userName, String password) {
         this.userName = userName;
         this.password = password;
@@ -24,6 +43,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override
@@ -51,6 +78,4 @@ public class User {
         }
         return true;
     }
-    
-    
 }

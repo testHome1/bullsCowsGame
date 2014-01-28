@@ -3,6 +3,7 @@ package com;
 import com.controller.DatabaseManager;
 import com.dao.UserDao;
 import com.dao.UserDaoImpl;
+import com.dao.hibernate.UserDaoJPA;
 import com.model.User;
 import com.mysql.jdbc.Connection;
 import java.io.IOException;
@@ -13,10 +14,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.websocket.Session;
+
 
 public class RegistratorServlet extends HttpServlet {
-
+    private UserDaoJPA daoJPA = new UserDaoJPA();
+    
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
         response.setCharacterEncoding("utf8");
@@ -36,7 +38,11 @@ public class RegistratorServlet extends HttpServlet {
             session.setAttribute("user", user);           
         }
         session.setAttribute("auth", new Boolean(true));
+        
         //getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
+        User user_test = new User("test", "test");
+        daoJPA.addUser(user_test);
+        
         response.sendRedirect("index.jsp");
     }
 }
